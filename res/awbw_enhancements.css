@@ -322,12 +322,23 @@ td.awbwenhancements-two-hit-ko {
     margin-right: 8px;
 }
 
-/* TODO: how to make this automatic? */
+.awbwenhancements-panel canvas {
+    position: relative;
+}
+
 .awbwenhancements-panel-content {
     min-width: 600px;
     min-height: 400px;
+    position: relative;
+    margin: 4px;
 }
 
-.awbwenhancements-replay-visualizer {
-    overflow: auto;
+.awbwenhancements-replay-visualizer-toolbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.awbwenhancements-replay-visualizer-toolbar .awbwenhancements-select {
+    margin-right: 0;
 }
