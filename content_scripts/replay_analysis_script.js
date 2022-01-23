@@ -1,5 +1,5 @@
-(function() {
-    const kSidebarButtonHtml = `
+OptionsReader.instance().onOptionsReady((options) => {
+    const kChartButtonHtml = `
     <section>
         <div class="game-tools-btn" style="margin-left: 5px;">
             <div class="game-tools-bg">
@@ -7,11 +7,11 @@
             </div>
             <span class="game-tools-btn-text small_text">Replay Analysis</span>
         </div>
-    </section>
-    `;
+    </section>`;
+
     function makeChartButton() {
         let tempNode = document.createElement("div");
-        tempNode.innerHTML = kSidebarButtonHtml;
+        tempNode.innerHTML = kChartButtonHtml;
         return tempNode.children[0];
     }
 
@@ -25,21 +25,16 @@
         return undefined;
     }
 
-    // TODO: should this hide when the replay is closed?
-    let replayControls = document.querySelector("section.replay-controls");
-    let chartButton = makeChartButton();
-    replayControls.parentNode.insertBefore(chartButton, replayControls.nextSibling);
-
     let gameId = getGameId();
-
     let replayFetcher = new ReplayFetcher();
+    let replayVisualizer = new ReplayVisualizer();
 
     let replayPanel = new DragPanel("replay-analysis-panel");
-    let replayVisualizer = new ReplayVisualizer(replayFetcher);
     replayPanel.setContent(replayVisualizer.getContent());
 
+    let replayControls = document.querySelector("section.replay-controls");
+    let chartButton = makeChartButton();
     chartButton.addEventListener("click", (event) => {
-        console.log("Clicked analysis button");
         replayPanel.toggleVisible();
 
         replayFetcher.fetchReplay(gameId).then((replayState) => {
@@ -47,5 +42,5 @@
             replayVisualizer.setReplayState(replayState);
         });
     });
-
-})();
+    replayControls.parentNode.insertBefore(chartButton, replayControls.nextSibling);
+});
