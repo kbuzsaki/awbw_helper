@@ -33,8 +33,11 @@
     let gameId = getGameId();
 
     let replayFetcher = new ReplayFetcher();
+    let replayPanel = new DragPanel("replay-analysis-panel");
+    replayPanel.setContent(document.createTextNode("foo bar baz"));
     chartButton.addEventListener("click", (event) => {
         console.log("Clicked analysis button");
+        replayPanel.toggleVisible();
         /*
         replayFetcher.fetchReplay(gameId).then((result) => {
             console.log("Fetched replay state:", result);

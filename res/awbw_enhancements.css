@@ -126,6 +126,9 @@
   border-color: rgb(205, 155, 154);
 }
 
+.awbwenhancements-hidden {
+    display: none;
+}
 
 .awbwenhancements-btn {
     display: flex;
@@ -279,4 +282,42 @@ td.awbwenhancements-two-hit-ko {
     position: absolute;
     width: 17px;
     z-index: 125;
+}
+
+.awbwenhancements-panel {
+    background: white;
+    border: 1px solid black;
+    font-family: sans-serif;
+    font-size: 14px;
+    min-width: 200px;
+    position: absolute;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 800;
+}
+
+.awbwenhancements-panel header {
+    background: #0066CC;
+    border: 1px solid #888888;
+    color: white;
+    font-weight: bold;
+    padding: 2px 2px;
+}
+
+.awbwenhancements-grab-header {
+    align-items: center;
+    cursor: grab;
+    display: flex;
+}
+.awbwenhancements-grab-header.awbwenhancements-grabbing {
+    cursor: grabbing;
+}
+
+.awbwenhancements-grab-header span {
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: auto;
+    margin-right: 8px;
 }
