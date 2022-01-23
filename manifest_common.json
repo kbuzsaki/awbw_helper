@@ -18,6 +18,7 @@
             "css": ["res/awbw_enhancements.css"],
             "js": [
                 "vendor/chart.min.js",
+                "vendor/lz-string.min.js",
                 "options/options_definitions.js",
                 "lib/options_reader.js",
                 "lib/drag_panel.js",
