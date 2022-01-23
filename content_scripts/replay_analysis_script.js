@@ -40,6 +40,9 @@ OptionsReader.instance().onOptionsReady((options) => {
         replayFetcher.fetchReplay(gameId).then((replayState) => {
             console.log("Fetched replay state:", replayState);
             replayVisualizer.setReplayState(replayState);
+        }).catch((error) => {
+            console.log("Failed to fetch replay state:", error);
+            replayVisualizer.setError(error);
         });
     });
     replayControls.parentNode.insertBefore(chartButton, replayControls.nextSibling);
