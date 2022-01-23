@@ -17,6 +17,7 @@
             "matches": ["https://awbw.amarriner.com/2030.php*"],
             "css": ["res/awbw_enhancements.css"],
             "js": [
+                "vendor/chart.min.js",
                 "options/options_definitions.js",
                 "lib/options_reader.js",
                 "lib/drag_panel.js",

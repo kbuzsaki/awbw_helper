@@ -321,3 +321,13 @@ td.awbwenhancements-two-hit-ko {
     margin-left: auto;
     margin-right: 8px;
 }
+
+/* TODO: how to make this automatic? */
+.awbwenhancements-panel-content {
+    min-width: 600px;
+    min-height: 400px;
+}
+
+.awbwenhancements-replay-visualizer {
+    overflow: auto;
+}
