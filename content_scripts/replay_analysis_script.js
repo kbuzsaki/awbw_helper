@@ -27,7 +27,7 @@ OptionsReader.instance().onOptionsReady((options) => {
 
     let gameId = getGameId();
     let replayFetcher = new ReplayFetcher();
-    let replayVisualizer = new ReplayVisualizer();
+    let replayVisualizer = new ReplayVisualizer(replayFetcher);
 
     let replayPanel = new DragPanel("replay-analysis-panel");
     replayPanel.setContent(replayVisualizer.getContent());
@@ -36,14 +36,7 @@ OptionsReader.instance().onOptionsReady((options) => {
     let chartButton = makeChartButton();
     chartButton.addEventListener("click", (event) => {
         replayPanel.toggleVisible();
-
-        replayFetcher.fetchReplay(gameId).then((replayState) => {
-            console.log("Fetched replay state:", replayState);
-            replayVisualizer.setReplayState(replayState);
-        }).catch((error) => {
-            console.log("Failed to fetch replay state:", error);
-            replayVisualizer.setError(error);
-        });
+        replayVisualizer.reload(gameId);
     });
     replayControls.parentNode.insertBefore(chartButton, replayControls.nextSibling);
 });
