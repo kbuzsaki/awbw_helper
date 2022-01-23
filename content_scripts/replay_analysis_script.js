@@ -33,16 +33,19 @@
     let gameId = getGameId();
 
     let replayFetcher = new ReplayFetcher();
+
     let replayPanel = new DragPanel("replay-analysis-panel");
-    replayPanel.setContent(document.createTextNode("foo bar baz"));
+    let replayVisualizer = new ReplayVisualizer(replayFetcher);
+    replayPanel.setContent(replayVisualizer.getContent());
+
     chartButton.addEventListener("click", (event) => {
         console.log("Clicked analysis button");
         replayPanel.toggleVisible();
-        /*
-        replayFetcher.fetchReplay(gameId).then((result) => {
-            console.log("Fetched replay state:", result);
+
+        replayFetcher.fetchReplay(gameId).then((replayState) => {
+            console.log("Fetched replay state:", replayState);
+            replayVisualizer.setReplayState(replayState);
         });
-        */
     });
 
 })();
