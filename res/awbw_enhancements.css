@@ -339,5 +339,14 @@ td.awbwenhancements-two-hit-ko {
     align-items: center;
 }
 
+.awbwenhancements-text-button {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    font-family: "Nova Square", cursive!important;
+}
+
 .awbwenhancements-replay-visualizer-toolbar .awbwenhancements-select {
 }

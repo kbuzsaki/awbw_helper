@@ -27,15 +27,37 @@ OptionsReader.instance().onOptionsReady((options) => {
 
     let gameId = getGameId();
     let replayFetcher = new ReplayFetcher();
-    let replayVisualizer = new ReplayVisualizer(replayFetcher);
+
+    let replayPanels = [];
+
+    function createNewVisualizer() {
+        let newVisualizer = new ReplayVisualizer(replayFetcher, createNewVisualizer);
+        let newPanel = new DragPanel(undefined, /*deleteOnClose=*/true, (toRemove) => {
+            let index = replayPanels.indexOf(toRemove);
+            console.log("Removing panel at index:", index);
+            if (index > -1) {
+                replayPanels.splice(index);
+            }
+        });
+        replayPanels.push(newPanel);
+        newPanel.setContent(newVisualizer.getContent());
+        newPanel.setVisible(true);
+        newVisualizer.reload(gameId);
+    };
+
+    let replayVisualizer = new ReplayVisualizer(replayFetcher, createNewVisualizer);
 
     let replayPanel = new DragPanel("replay-analysis-panel");
     replayPanel.setContent(replayVisualizer.getContent());
+    replayPanels.push(replayPanel);
 
     let replayControls = document.querySelector("section.replay-controls");
     let chartButton = makeChartButton();
     chartButton.addEventListener("click", (event) => {
-        replayPanel.toggleVisible();
+        let newVisible = !replayPanels[0].getVisible();
+        for (let panel of replayPanels) {
+            panel.setVisible(newVisible);
+        }
         replayVisualizer.reload(gameId);
     });
     replayControls.parentNode.insertBefore(chartButton, replayControls.nextSibling);
