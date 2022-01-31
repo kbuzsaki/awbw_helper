@@ -60,5 +60,5 @@ OptionsReader.instance().onOptionsReady((options) => {
         }
         replayVisualizer.reload(gameId);
     });
-    replayControls.parentNode.insertBefore(chartButton, replayControls.nextSibling);
+    replayControls.parentNode.insertBefore(chartButton, replayControls);
 });
