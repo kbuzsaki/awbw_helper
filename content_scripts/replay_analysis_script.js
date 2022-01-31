@@ -31,16 +31,25 @@ OptionsReader.instance().onOptionsReady((options) => {
     let replayPanels = [];
     function removePanel(panelToRemove) {
         let index = replayPanels.indexOf(panelToRemove);
-        console.log("Removing panel at index:", index);
         if (index > -1) {
             replayPanels.splice(index, 1);
         }
         panelToRemove.remove();
     };
+    function bringToFront(panel){
+        let index = replayPanels.indexOf(panel);
+        if (index > -1) {
+            let [splicedPanel] = replayPanels.splice(index, 1);
+            replayPanels.push(splicedPanel);
+        }
+        for (let index = 0; index < replayPanels.length; index++) {
+            replayPanels[index].setZIndexOffset(index);
+        }
+    }
 
     function createNewVisualizer() {
         let newVisualizer = new ReplayVisualizer(replayFetcher, createNewVisualizer);
-        let newPanel = new DragPanel(/*onClose=*/removePanel);
+        let newPanel = new DragPanel(/*onClose=*/removePanel, /*bringToFront=*/bringToFront);
         replayPanels.push(newPanel);
         newPanel.setContent(newVisualizer.getContent());
         newPanel.setVisible(true);
