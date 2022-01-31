@@ -29,36 +29,35 @@ OptionsReader.instance().onOptionsReady((options) => {
     let replayFetcher = new ReplayFetcher();
 
     let replayPanels = [];
+    function removePanel(panelToRemove) {
+        let index = replayPanels.indexOf(panelToRemove);
+        console.log("Removing panel at index:", index);
+        if (index > -1) {
+            replayPanels.splice(index, 1);
+        }
+        panelToRemove.remove();
+    };
 
     function createNewVisualizer() {
         let newVisualizer = new ReplayVisualizer(replayFetcher, createNewVisualizer);
-        let newPanel = new DragPanel(undefined, /*deleteOnClose=*/true, (toRemove) => {
-            let index = replayPanels.indexOf(toRemove);
-            console.log("Removing panel at index:", index);
-            if (index > -1) {
-                replayPanels.splice(index);
-            }
-        });
+        let newPanel = new DragPanel(/*onClose=*/removePanel);
         replayPanels.push(newPanel);
         newPanel.setContent(newVisualizer.getContent());
         newPanel.setVisible(true);
         newVisualizer.reload(gameId);
     };
 
-    let replayVisualizer = new ReplayVisualizer(replayFetcher, createNewVisualizer);
-
-    let replayPanel = new DragPanel("replay-analysis-panel");
-    replayPanel.setContent(replayVisualizer.getContent());
-    replayPanels.push(replayPanel);
-
     let replayControls = document.querySelector("section.replay-controls");
     let chartButton = makeChartButton();
     chartButton.addEventListener("click", (event) => {
-        let newVisible = !replayPanels[0].getVisible();
-        for (let panel of replayPanels) {
-            panel.setVisible(newVisible);
+        if (replayPanels.length > 0) {
+            let newVisible = !replayPanels[0].getVisible();
+            for (let panel of replayPanels) {
+                panel.setVisible(newVisible);
+            }
+        } else {
+            createNewVisualizer();
         }
-        replayVisualizer.reload(gameId);
     });
     replayControls.parentNode.insertBefore(chartButton, replayControls);
 });
