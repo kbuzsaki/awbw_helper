@@ -102,6 +102,15 @@ let kCheckOptionsMapping = [
             `Fixes extra "capture" icons being displayed for infantry that already finished capturing.`
         ],
     }, {
+        id: "enable-bugfix-restore-clobbers-removed-unit-icons",
+        name: "options_enable_bugfix_restore_clobbers_removed_unit_icons",
+        default: true,
+        label: 'Fix Removed Unit Icons Disappearing After Savestate Restore',
+        description: [
+            `Fixes the bug where units in the "Removed Units" panel will have their icons cleared when a ` +
+            `savestate is restored. (This happens because they are wiped as part of clearing the old board state.)`
+        ],
+    }, {
         id: "enable-bugfix-encoded-sprite-urls",
         name: "options_enable_bugfix_encoded_sprite_urls",
         default: true,

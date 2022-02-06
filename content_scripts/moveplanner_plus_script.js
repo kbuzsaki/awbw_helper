@@ -293,6 +293,20 @@ OptionsReader.instance().onOptionsReady((options) => {
         });
         observer.observe(gamemap, {subtree: true, childList: true, attributes: true});
 
+        if (options.options_enable_bugfix_restore_clobbers_removed_unit_icons) {
+            let removedUnitsPanel = document.getElementById("planner_removed_units");
+            if (removedUnitsPanel) {
+                (new MutationObserver(() => {
+                    let childSpans = removedUnitsPanel.getElementsByTagName("span");
+                    for (let child of childSpans) {
+                        if (child.id.startsWith("unit_")) {
+                            child.removeAttribute("id");
+                        }
+                    }
+                })).observe(removedUnitsPanel, {subtree: true, childList: true});
+            }
+        }
+
         // Grab initial state to initialize stuff
         parser.handleMapUpdate();
 
