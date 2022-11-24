@@ -1,5 +1,16 @@
 let kCheckOptionsMapping = [
     {
+        id: "enable-rate-limit-workaround",
+        name: "options_enable_rate_limit_workaround",
+        default: true,
+        label: "Enable Rate Limit Workaround",
+        description: [
+            `Enables a workaround for the rate limiting that breaks replays if you advance through ` +
+            `them too quickly.`,
+            `The workaround code pre-emptively throttles certain unimportant requests and adds delayed retrying ` +
+            `for important requests that load the next turn's replay data.`
+        ],
+    }, {
         id: "enable-speedy-event-panel",
         name: "options_enable_speedy_event_panel",
         default: false,
