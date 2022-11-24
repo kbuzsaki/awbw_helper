@@ -9,6 +9,7 @@
         }
     },
     "web_accessible_resources": [
+        "/res/axios_throttler.js",
         "/res/playersinfo_patcher.js",
         "/res/savestate_injector.js",
         "/res/unitsinfo_patcher.js"
