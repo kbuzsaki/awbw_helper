@@ -3,7 +3,7 @@
 
     class AxiosThrottler {
         constructor() {
-            this.debug = true;
+            this.debug = false;
             this.throttleMs = 10 * 1000;
             this.retryBackoffMs = 2 * 1000;
             this.maxRetries = 2;
@@ -43,29 +43,33 @@
             });
         }
 
-        doWithRetries(id, promiseFn) {
-            var hasRetried = false;
-
-            return promiseFn().then((res) => {
-                if (this.debug) console.log("Retriable req got: url:", id, "with value:", res);
-                return res;
-            }).catch((res) => {
-                if (this.debug) console.log("Error from retriable req: url:", id, "with value:", res);
-                let shouldRetry = res.response.status === 503 && !hasRetried;
-                hasRetried = true;
+        doWithRetriesInternal(req, retriesRemaining) {
+            if (this.debug) console.log("Doing retriable request", req.url, "with retries left", retriesRemaining);
+            return oldPost(req.url, req.data, req.config).catch((res) => {
+                let wasRateLimited = res.response.status === 503;
+                let shouldRetry = wasRateLimited && retriesRemaining > 0;
 
                 if (shouldRetry) {
-                    console.log("Retriable request was 503'd!");
-                    return new Promise((resolve) => {
+                    console.log("Retriable request", req.url, "was 503'd! Retrying with backoff:",
+                                this.retryBackoffMs, "and", retriesRemaining, "retries remaining.");
+                    return new Promise((resolve, reject) => {
                         setTimeout(() => {
-                            console.log("Retrying 503'd request...");
-                            promiseFn().then(resolve);
+                            console.log("Retrying 503'd request for", req.url);
+                            this.doWithRetriesInternal(req, retriesRemaining - 1).then(resolve).catch(reject);
                         }, this.retryBackoffMs);
                     });
+                } else if (wasRateLimited) {
+                    console.log("Retriable request", req.url, "was 503'd and has no more retries!");
+                    throw res;
                 } else {
+                    console.log("Retriable request", req.url, "hit an unexpected error!", res.response);
                     throw res;
                 }
             });
+        }
+
+        doWithRetries(req) {
+            return this.doWithRetriesInternal(req, this.maxRetries);
         }
 
         // Monkey patch axios.post to implement two pieces of functionality:
@@ -77,7 +81,7 @@
             if (this.isCacheableRequest(req)) {
                 return this.doWithCacheThrottling(req);
             } else if (this.isRetriableRequest(req)) {
-                return this.doWithRetries(url, () => { return oldPost(url, data, config); });
+                return this.doWithRetries(req);
             }
 
             return oldPost(url, data, config);
