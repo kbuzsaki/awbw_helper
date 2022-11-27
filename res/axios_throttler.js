@@ -4,10 +4,13 @@
     class AxiosThrottler {
         constructor() {
             this.debug = false;
-            this.throttleMs = 10 * 1000;
-            this.retryBackoffMs = 2 * 1000;
-            this.maxRetries = 2;
             this.requestCache = new Map();
+            // Minimum interval between "throttled" requests
+            this.throttleMs = 10 * 1000;
+            // Interval between retries for retriable requests
+            this.retryBackoffMs = 2 * 1000;
+            // Maxmimum number of *additional* retries for retriable requests
+            this.maxRetries = 2;
         }
 
         // Only throttle specific request types so that we don't accidentally break the
@@ -22,6 +25,14 @@
             return req.url === "api/game/load_replay.php";
         }
 
+        // Fulfill the request with cache-based "throttling" of duplicate requests within
+        // the throttle interval. This can return data that is up to throttleMs stale.
+        // Behavior is to:
+        // 1. always allow requests if they:
+        //     a. haven't been seen before (aren't in the cache)
+        //     b. have a cache entry that is stale (older than throttleMs)
+        // 2. return the cached value if the request was last made within throttleMs
+        // 3. coalesce concurrent requests onto a single outgoing request
         doWithCacheThrottling(req) {
             let key = JSON.stringify({url: req.url, data: req.data});
             let cacheEntry = this.requestCache.get(key);
@@ -35,6 +46,9 @@
                 return cacheEntry.promise;
             }
 
+            // Store the promise in the cache, not the value, so that concurrent requests
+            // will all block on a single outgoing request, rather than concurrently making requests
+            // and fighting over who can write to the cache.
             let promise = oldPost(req.url, req.data, req.config);
             this.requestCache.set(key, {promise: promise, timeMs: Date.now()});
             return promise.then((res) => {
@@ -43,6 +57,7 @@
             });
         }
 
+        // Fulfill the request with a limited backoff and retry loop on 503 errors.
         doWithRetriesInternal(req, retriesRemaining) {
             if (this.debug) console.log("Doing retriable request", req.url, "with retries left", retriesRemaining);
             return oldPost(req.url, req.data, req.config).catch((res) => {
@@ -74,7 +89,7 @@
 
         // Monkey patch axios.post to implement two pieces of functionality:
         // 1. throttle known noisy requests to avoid hitting the rate limit.
-        // 2. if we do hit the rate limit, block and retry them?
+        // 2. if we do hit the rate limit for important retriable requests, retry them
         wrappedPost(url, data, config) {
             let req = {url: url, data: data, config: config};
 
