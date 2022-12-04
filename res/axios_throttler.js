@@ -16,7 +16,9 @@
         // Only throttle specific request types so that we don't accidentally break the
         // game state by returning incorrect information.
         isCacheableRequest(req) {
-            return req.url === "api/game/fetch_game_activity_date.php";
+            let currentUrlParams = new URLSearchParams(window.location.search);
+            let inReplayMode = currentUrlParams.has("ndx");
+            return inReplayMode && req.url === "api/game/fetch_game_activity_date.php";
         }
 
         // Only retry specific request types so that we don't accidentally retry
