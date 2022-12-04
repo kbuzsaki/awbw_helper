@@ -17,7 +17,8 @@
         let data = JSON.parse(dataJson);
         console.log("got patch data:", data);
         for (let patch of (data.patches || [])) {
-            let playerInfo = playersInfo?.[patch.id];
+            // playersInfo may be empty in some circumstances, e.g. when opened from a map
+            let playerInfo = playersInfo?.[patch.id] || {};
             for (let key of Object.keys(patch.data || {})) {
                 playerInfo[key] = patch.data[key];
             }
