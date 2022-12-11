@@ -1,4 +1,4 @@
-SRCS = manifest.json content_scripts/* lib/* options/* res/* vendor/*
+SRCS = manifest.json background/* content_scripts/* lib/* options/* res/* vendor/*
 
 OUTPUT_DIR = dist/
 OUTPUT = $(OUTPUT_DIR)/package.zip
