@@ -240,3 +240,13 @@
     z-index: 126;
     pointer-events: none;
 }
+
+.awbwenhancements-power-star-percent-new {
+    background: rgba(28, 249, 201, 0.6);
+    border-top: 3px solid rgba(0, 177, 200, 0.9);
+    border-bottom: 3px solid rgba(0, 177, 200, 0.9);
+    height: 100%;
+    transform: translate(-1px,0px);
+    position: absolute;
+    top: -3px;
+}
