@@ -260,3 +260,23 @@ td.awbwenhancements-two-hit-ko {
     border-width: 2px !important;
     border-color: blue !important;
 }
+
+.awbwenhancements-next-day-movement-tile {
+    background: rgba(207, 130, 227, 0.5);
+    border-color: rgb(22, 98, 184);
+    box-sizing: border-box;
+    height: 17px;
+    position: absolute;
+    width: 17px;
+    z-index: 125;
+}
+
+.awbwenhancements-intersect-movement-tile {
+    background: rgba(54, 97, 146, 0.4);
+    border-color: rgb(22, 98, 184);
+    box-sizing: border-box;
+    height: 17px;
+    position: absolute;
+    width: 17px;
+    z-index: 125;
+}
