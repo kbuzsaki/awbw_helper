@@ -229,3 +229,14 @@
     border-width: 1px;
     pointer-events: none;
 }
+
+.awbwenhancements-second-move-tile {
+    background: rgba(66, 125, 227, 0.15);
+    border-color: rgba(22, 34, 184, 0.6);
+    box-sizing: border-box;
+    height: 17px;
+    position: absolute;
+    width: 17px;
+    z-index: 126;
+    pointer-events: none;
+}
