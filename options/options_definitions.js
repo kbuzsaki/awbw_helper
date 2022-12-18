@@ -41,6 +41,15 @@ let kCheckOptionsMapping = [
             "to click the buttons."
         ],
     }, {
+        id: "enable-gameswait-redirect",
+        name: "options_enable_gameswait_redirect",
+        default: true,
+        label: "Enable Automatic Game Lobby Redirect",
+        description: [
+            `Automatically redirect from expired links to the "gameswait.php" page to the ` +
+            `corresponding "2030.php" page.`
+        ],
+    }, {
         id: "enable-moveplanner-plus",
         name: "options_enable_moveplanner_plus",
         default: true,
