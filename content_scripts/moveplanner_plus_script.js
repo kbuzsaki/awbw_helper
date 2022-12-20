@@ -180,8 +180,11 @@ function injectRequestedStyles(options) {
 
     let s = document.createElement("style");
     s.appendChild(document.createTextNode(`
-    #options-menu, #build-menu {
-      opacity: ${options.options_menu_opacity};
+    #options-menu ul, #build-menu ul {
+      background-color: rgb(221, 221, 221, ${options.options_menu_background_alpha});
+    }
+    #options-menu ul li:hover, #build-menu ul li:hover {
+      background-color: rgb(190, 190, 190, ${options.options_menu_background_alpha});
     }`));
     (document.head || document.documentElement).appendChild(s);
 }

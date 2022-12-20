@@ -189,16 +189,17 @@ let kRangeOptionsMapping = [
             `ongoing game.`
         ],
     }, {
-        id: "menu-opacity-range",
-        previewId: "menu-opacity-preview",
-        name: "options_menu_opacity",
-        default: 0.75,
+        id: "menu-background-alpha-range",
+        previewId: "menu-background-alpha-preview",
+        name: "options_menu_background_alpha",
+        default: 0.6,
         min: 0.15,
         max: 1,
         step: 0.05,
-        label: "Menu Opacity",
+        label: "Menu Alpha",
         description: [
-            `Makes the "Action Menu" and "Build Menu" partially transparent so that you can see behind them.`
+            `Makes the background of the "Action Menu" and "Build Menu" partially transparent so that ` +
+            `you can see behind them.`
         ],
     }
 ];
