@@ -47,6 +47,7 @@ chrome.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
     }, (result) => {
         if (!result.options_enable_automatic_replay_renaming) {
             console.log("Automatic replay renaming disabled:", result, ", ignoring download:", downloadItem);
+            suggest();
             return;
         }
         console.log("Renamer with options", result, "inspecting download", downloadItem);
