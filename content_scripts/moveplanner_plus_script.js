@@ -84,7 +84,7 @@ async function getInitialPlayerState(options, mapEntities) {
             }
 
             // If income is set and non-zero, try to infer the funding level
-            if (playerInfo.players_income && !fundsPerProperty) {
+            if (playerInfo.players_income && playerInfo.cities != "?" && !fundsPerProperty) {
                 let properties = propertiesByCountry[playerInfo.countries_code];
                 let incomeProperties = properties.filter((p) => p.producesIncome()).length;
                 fundsPerProperty = playerInfo.players_income / incomeProperties;
