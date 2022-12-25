@@ -45,6 +45,49 @@ OptionsReader.instance().onOptionsReady((options) => {
         }
     }
 
+    function initializeDamage() {
+        let cells = damageTable.querySelectorAll("td.small");
+        for (let cell of cells) {
+            let damage = parseFloat(cell.textContent);
+            if (isNaN(damage)) {
+                continue;
+            }
+            cell.setAttribute("base-damage", cell.textContent);
+        }
+    }
+
+    function updateDamage() {
+        let attackInput = document.getElementById("attack-rating");
+        let attackRating = parseFloat(attackInput.value);
+        let attackCoeff = attackRating / 100;
+        let defenseInput = document.getElementById("defense-rating");
+        let defenseRating = parseFloat(defenseInput.value);
+        let defenseCoeff = (200 - defenseRating) / 100;
+
+        if (isNaN(attackCoeff) || isNaN(defenseCoeff)) {
+            // TODO: reportError
+            console.log("Got NaN attack or defense:", attackCoeff, defenseCoeff);
+            return;
+        }
+
+        let cells = damageTable.querySelectorAll("td.small");
+        for (let cell of cells) {
+            if (!cell.hasAttribute("base-damage")) {
+                continue;
+            }
+
+            let damage = parseFloat(cell.getAttribute("base-damage"));
+            let rawDamage = damage * attackCoeff * defenseCoeff;
+            let flooredDamage = Math.floor(rawDamage);
+            let fraction = rawDamage - Math.floor(rawDamage);
+            let roundedDamage = fraction >= 0.95 ? flooredDamage + 1 : flooredDamage;
+
+            cell.textContent = roundedDamage;
+        }
+
+        updateHighlights();
+    }
+
     let kAlphabetical = "alphabetical_order";
     let kBuild = "build_order";
     let currentOrder = kAlphabetical;
@@ -88,10 +131,20 @@ OptionsReader.instance().onOptionsReady((options) => {
     <label>
         Sort:
     </label>
-    <select id="order-select" class="awbwenhancements-select awbwenhancements-replay-visualizer-metric-select">
+    <select id="order-select">
         <option>Alphabetical Order</option>
         <option selected>Production Order</option>
     </select>
+    <label>
+        Attack:
+    </label>
+    <input id="attack-rating" type="number" value="100" step="10"
+           class="awbwenhancements-numeric-input" style="width: 3.5em;" />
+    <label>
+        Defense:
+    </label>
+    <input id="defense-rating" type="number" value="100" step="10"
+           class="awbwenhancements-numeric-input" style="width: 3.5em;" />
 </div>`;
         let tempNode = document.createElement("div");
         tempNode.innerHTML = kControlsHtml;
@@ -107,8 +160,16 @@ OptionsReader.instance().onOptionsReady((options) => {
             let order = orderSelect.value === "Production Order" ? kBuild : kAlphabetical;
             arrangeRows(order);
         });
+
+        let inputs = document.querySelectorAll("#damage-controls input");
+        for (let input of inputs) {
+            input.addEventListener("change", (event) => {
+                updateDamage();
+            });
+        }
     }
 
+    initializeDamage();
     initializeControls();
     updateHighlights();
     arrangeRows(kBuild);

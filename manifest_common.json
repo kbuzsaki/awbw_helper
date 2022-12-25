@@ -25,6 +25,7 @@
             ]
         }, {
             "matches": ["https://awbw.amarriner.com/damage.php"],
+            "css": ["res/awbw_enhancements.css"],
             "js": [
                 "options/options_definitions.js",
                 "lib/options_reader.js",

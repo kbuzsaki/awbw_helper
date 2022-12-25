@@ -156,6 +156,16 @@
     margin-right: 4px;
 }
 
+.awbwenhancements-numeric-input {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+    background-color: #0066CC;
+    color: #FFFFE0;
+    font-size: 14px;
+    font-family: Arial,Verdana,Helvetica,Geneva,sans-serif;
+}
+
 .awbwenhancements-btn-container {
   display: flex;
   height: 100%;
