@@ -58,11 +58,19 @@ OptionsReader.instance().onOptionsReady((options) => {
 
     function updateDamage() {
         let attackInput = document.getElementById("attack-rating");
+        let attackHpInput = document.getElementById("attacker-hp");
+        let coDefenseInput = document.getElementById("co-defense-rating");
+        let defenseHpInput = document.getElementById("defender-hp");
+        let terrainDefenseInput = document.getElementById("terrain-defense-rating");
+
         let attackRating = parseFloat(attackInput.value);
-        let attackCoeff = attackRating / 100;
-        let defenseInput = document.getElementById("defense-rating");
-        let defenseRating = parseFloat(defenseInput.value);
-        let defenseCoeff = (200 - defenseRating) / 100;
+        let attackerHp = parseFloat(attackHpInput.value);
+        let attackCoeff = attackRating / 100 * attackerHp / 10;
+
+        let coDefenseRating = parseFloat(coDefenseInput.value);
+        let defenderHp = parseFloat(defenseHpInput.value);
+        let terrainDefenseRating = parseFloat(terrainDefenseInput.value);
+        let defenseCoeff = (200 - (coDefenseRating + terrainDefenseRating * defenderHp / 10)) / 100;
 
         if (isNaN(attackCoeff) || isNaN(defenseCoeff)) {
             // TODO: reportError
@@ -128,6 +136,7 @@ OptionsReader.instance().onOptionsReady((options) => {
     function makeControlsNode() {
         const kControlsHtml = `
 <div id="damage-controls">
+    <div>
     <label>
         Sort:
     </label>
@@ -135,16 +144,32 @@ OptionsReader.instance().onOptionsReady((options) => {
         <option>Alphabetical Order</option>
         <option selected>Production Order</option>
     </select>
-    <label>
-        Attack:
-    </label>
-    <input id="attack-rating" type="number" value="100" step="10"
-           class="awbwenhancements-numeric-input" style="width: 3.5em;" />
-    <label>
-        Defense:
-    </label>
-    <input id="defense-rating" type="number" value="100" step="10"
-           class="awbwenhancements-numeric-input" style="width: 3.5em;" />
+        <label>
+            Attack:
+        </label>
+        <input id="attack-rating" type="number" value="100" step="10"
+            class="awbwenhancements-numeric-input" style="width: 3.5em;" />
+        <label>
+            HP:
+        </label>
+        <input id="attacker-hp" type="number" value="10" min="1" max="10" step="1"
+            class="awbwenhancements-numeric-input" style="width: 3em;" />
+        <label>
+            CO Defense:
+        </label>
+        <input id="co-defense-rating" type="number" value="100" step="10"
+            class="awbwenhancements-numeric-input" style="width: 3.5em;" />
+        <label>
+            HP:
+        </label>
+        <input id="defender-hp" type="number" value="10" min="1" max="10" step="1"
+            class="awbwenhancements-numeric-input" style="width: 3em;" />
+        <label>
+            Terrain Defense:
+        </label>
+        <input id="terrain-defense-rating" type="number" value="0" step="10"
+            class="awbwenhancements-numeric-input" style="width: 3em;" />
+    </div>
 </div>`;
         let tempNode = document.createElement("div");
         tempNode.innerHTML = kControlsHtml;
