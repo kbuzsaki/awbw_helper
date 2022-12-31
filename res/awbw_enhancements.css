@@ -254,3 +254,9 @@
     border-width: 1px;
     pointer-events: none;
 }
+
+td.awbwenhancements-two-hit-ko {
+    border-style: solid !important;
+    border-width: 2px !important;
+    border-color: blue !important;
+}

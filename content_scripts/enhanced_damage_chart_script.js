@@ -57,26 +57,34 @@ OptionsReader.instance().onOptionsReady((options) => {
     }
 
     function updateDamage() {
+        function getDamage(baseDamage, attacker, defender) {
+            let attackCoeff = attacker.attack / 100 * attacker.hp / 10;
+            let defenseCoeff = (200 - (defender.coDefense + defender.terrainDefense * defender.hp / 10)) / 100;
+
+            let rawDamage = baseDamage * attackCoeff * defenseCoeff;
+            let flooredDamage = Math.floor(rawDamage);
+            let fraction = rawDamage - Math.floor(rawDamage);
+            let roundedDamage = fraction >= 0.95 ? flooredDamage + 1 : flooredDamage;
+            return roundedDamage;
+        }
+
         let attackInput = document.getElementById("attack-rating");
         let attackHpInput = document.getElementById("attacker-hp");
         let coDefenseInput = document.getElementById("co-defense-rating");
         let defenseHpInput = document.getElementById("defender-hp");
         let terrainDefenseInput = document.getElementById("terrain-defense-rating");
 
-        let attackRating = parseFloat(attackInput.value);
-        let attackerHp = parseFloat(attackHpInput.value);
-        let attackCoeff = attackRating / 100 * attackerHp / 10;
+        let attacker = {
+            attack: parseFloat(attackInput.value),
+            hp: parseFloat(attackHpInput.value),
+        };
+        let defender = {
+            coDefense: parseFloat(coDefenseInput.value),
+            hp: parseFloat(defenseHpInput.value),
+            terrainDefense: parseFloat(terrainDefenseInput.value),
+        };
 
-        let coDefenseRating = parseFloat(coDefenseInput.value);
-        let defenderHp = parseFloat(defenseHpInput.value);
-        let terrainDefenseRating = parseFloat(terrainDefenseInput.value);
-        let defenseCoeff = (200 - (coDefenseRating + terrainDefenseRating * defenderHp / 10)) / 100;
-
-        if (isNaN(attackCoeff) || isNaN(defenseCoeff)) {
-            // TODO: reportError
-            console.log("Got NaN attack or defense:", attackCoeff, defenseCoeff);
-            return;
-        }
+        // TODO: check for NaN
 
         let cells = damageTable.querySelectorAll("td.small");
         for (let cell of cells) {
@@ -84,13 +92,26 @@ OptionsReader.instance().onOptionsReady((options) => {
                 continue;
             }
 
-            let damage = parseFloat(cell.getAttribute("base-damage"));
-            let rawDamage = damage * attackCoeff * defenseCoeff;
-            let flooredDamage = Math.floor(rawDamage);
-            let fraction = rawDamage - Math.floor(rawDamage);
-            let roundedDamage = fraction >= 0.95 ? flooredDamage + 1 : flooredDamage;
+            let baseDamage = parseFloat(cell.getAttribute("base-damage"));
+            let roundedDamage = getDamage(baseDamage, attacker, defender);
 
+            let hasTwoHitKo = false;
+            let remainingHp = defender.hp * 10 - roundedDamage;
+            if (roundedDamage > 0 && remainingHp > roundedDamage) {
+                let newDefender = Object.assign({}, defender);
+                newDefender.hp = Math.ceil(remainingHp / 10);
+                let secondHitDamage = getDamage(baseDamage, attacker, newDefender);
+                if (secondHitDamage >= remainingHp) {
+                    console.log("Found 2hko!:", baseDamage);
+                    hasTwoHitKo = true;
+                }
+            }
+
+            cell.classList.remove("awbwenhancements-two-hit-ko");
             cell.textContent = roundedDamage;
+            if (hasTwoHitKo) {
+                cell.classList.add("awbwenhancements-two-hit-ko");
+            }
         }
 
         updateHighlights();
