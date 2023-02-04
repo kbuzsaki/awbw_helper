@@ -218,6 +218,37 @@ function initializeCheckboxOptions() {
     }
 }
 
+function templateSelectOption(mapping) {
+    let description = templateDescription(mapping.description);
+    let requires = (mapping.requires || []).join(" ");
+
+    let optionsHtml = "";
+    for (let selectOption of mapping.options) {
+        optionsHtml += `<option value="${selectOption.value}">${selectOption.label}</option>`;
+    }
+
+    return `
+<div class="row mb-3">
+  <div class="col-xs-6 col-sm-5 col-lg-4">
+    <label for="${mapping.id}" class="form-check-label">${mapping.label}</label>
+  </div>
+  <div class="col">
+    <select class="form-select ${requires}" id="${mapping.id}">
+    ${optionsHtml}
+    </select>
+  </div>
+  <div class="form-text">${description}</div>
+</div>`;
+
+}
+
+function initializeSelectOptions() {
+    for (let optionMapping of kSelectOptionsMapping) {
+        let container = document.getElementById(optionMapping.id + "-container");
+        container.innerHTML = DOMPurify.sanitize(templateSelectOption(optionMapping));
+    }
+}
+
 function templateRangeOption(mapping) {
     let description = templateDescription(mapping.description);
     let requires = (mapping.requires || []).join(" ");
@@ -298,6 +329,15 @@ function setOptionsOnPage(options) {
         }
     }
 
+    for (let optionMapping of kSelectOptionsMapping) {
+        if (options.hasOwnProperty(optionMapping.name)) {
+            let inputElement = document.getElementById(optionMapping.id);
+            if (inputElement) {
+                inputElement.value = options[optionMapping.name];
+            }
+        }
+    }
+
     for (let optionMapping of kRangeOptionsMapping) {
         if (options.hasOwnProperty(optionMapping.name)) {
             let inputElement = document.getElementById(optionMapping.id);
@@ -340,6 +380,13 @@ function parseOptionsFromPage() {
         }
     }
 
+    for (let optionMapping of kSelectOptionsMapping) {
+        let inputElement = document.getElementById(optionMapping.id);
+        if (inputElement) {
+            parsedOptions[optionMapping.name] = inputElement.value;
+        }
+    }
+
     for (let optionMapping of kRangeOptionsMapping) {
         let inputElement = document.getElementById(optionMapping.id);
         if (inputElement) {
@@ -364,6 +411,7 @@ function parseOptionsFromPage() {
 }
 
 initializeCheckboxOptions();
+initializeSelectOptions();
 initializeRangeOptions();
 initializeKeyboardOptions();
 
@@ -390,23 +438,27 @@ chrome.storage.sync.get(kOptionDefaults, (result) => {
         childOption.disabled = !result.options_enable_speedy_event_panel;
     }
 
-    let inputs = document.querySelectorAll("input");
-    for (let input of inputs) {
-        input.addEventListener("change", (event) => {
-            let parsedOptions = parseOptionsFromPage();
-            console.log("Updating options:", parsedOptions);
-            chrome.storage.sync.set(parsedOptions);
+    let onChangeHandler = () => {
+        let parsedOptions = parseOptionsFromPage();
+        console.log("Updating options:", parsedOptions);
+        chrome.storage.sync.set(parsedOptions);
 
-            let moveplannerPlusDisabled = !parsedOptions.options_enable_moveplanner_plus;
-            for (let childOption of moveplannerPlusChildOptions) {
-                childOption.disabled = moveplannerPlusDisabled;
-            }
+        let moveplannerPlusDisabled = !parsedOptions.options_enable_moveplanner_plus;
+        for (let childOption of moveplannerPlusChildOptions) {
+            childOption.disabled = moveplannerPlusDisabled;
+        }
 
-            let speedyEventPanelDisabled = !parsedOptions.options_enable_speedy_event_panel;
-            for (let childOption of speedyEventPanelChildOptions) {
-                childOption.disabled = speedyEventPanelDisabled;
-            }
-        });
+        let speedyEventPanelDisabled = !parsedOptions.options_enable_speedy_event_panel;
+        for (let childOption of speedyEventPanelChildOptions) {
+            childOption.disabled = speedyEventPanelDisabled;
+        }
+    };
+
+    for (let input of document.querySelectorAll("input")) {
+        input.addEventListener("change", onChangeHandler);
+    }
+    for (let select of document.querySelectorAll("select")) {
+        select.addEventListener("change", onChangeHandler);
     }
 
     let resetDefaultsBtn = document.getElementById("reset-defaults-btn");

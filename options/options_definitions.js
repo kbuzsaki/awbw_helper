@@ -166,6 +166,34 @@ let kCheckOptionsMapping = [
     },
 ];
 
+let NextDayRangePreviewMode = {
+    OFF: "next_day_preview_off",
+    WHEN_HELD: "next_day_preview_when_held",
+    ALWAYS_ON: "next_day_preview_always_on",
+};
+let kSelectOptionsMapping = [
+    {
+        id: "next-day-range-preview-select",
+        name: "options_next_day_range_preview_mode",
+        requires: ["js-requires-moveplanner-plus"],
+        options: [
+            {label: "Always Off", value: NextDayRangePreviewMode.OFF},
+            {label: "When Holding Quick Range Hotkeys", value: NextDayRangePreviewMode.WHEN_HELD},
+            {label: "Always On", value: NextDayRangePreviewMode.ALWAYS_ON},
+        ],
+        default: NextDayRangePreviewMode.WHEN_HELD,
+        label: "Next-day Range Preview Mode",
+        description: [
+            `Adds an additional preview of the "next-day movement range" for the selected unit. ` +
+            `If the unit is being moved, this will show what the unit's movement range would be if it were on ` +
+            `the highlighted tile. If the cursor is on the unit's original tile, this will show the unit's full "two day ` +
+            `movement range".`,
+            `You can also hold the "Quick Attack Range" shortcut to show what an indirect unit's attack range would be ` +
+            `from the highlighted tile.`,
+        ],
+    },
+];
+
 let kRangeOptionsMapping = [
     {
         id: "event-panel-speed-range",
@@ -264,7 +292,7 @@ let kKeyboardOptionsMapping = [
     },
 ];
 
-let kAllOptionsMapping = kCheckOptionsMapping.concat(kRangeOptionsMapping).concat(kKeyboardOptionsMapping);
+let kAllOptionsMapping = kCheckOptionsMapping.concat(kSelectOptionsMapping).concat(kRangeOptionsMapping).concat(kKeyboardOptionsMapping);
 
 let kOptionDefaults = Object.fromEntries(kAllOptionsMapping.map(
     (optionMapping) => [optionMapping.name, optionMapping.default]));
