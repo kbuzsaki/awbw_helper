@@ -50,6 +50,14 @@ let kCheckOptionsMapping = [
             `corresponding "2030.php" page.`
         ],
     }, {
+        id: "enable-enhanced-damage-chart",
+        name: "options_enable_enhanced_damage_chart",
+        default: true,
+        label: "Enable Enhanced Damage Chart",
+        description: [
+            `Adds color coding, production sort order, and firepower and defense modifiers to the damage chart.`
+        ],
+    }, {
         id: "enable-moveplanner-plus",
         name: "options_enable_moveplanner_plus",
         default: true,

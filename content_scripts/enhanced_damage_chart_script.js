@@ -6,7 +6,7 @@
 // TODO: health?
 // TODO: ...luck ranges?
 OptionsReader.instance().onOptionsReady((options) => {
-    if (!options.options_enable_gameswait_redirect) {
+    if (!options.options_enable_enhanced_damage_chart) {
         console.log("Enhanced damage chart disabled.");
         return;
     }
@@ -57,9 +57,10 @@ OptionsReader.instance().onOptionsReady((options) => {
     }
 
     function updateDamage() {
-        function getDamage(baseDamage, attacker, defender) {
+        function getDamage(baseDamage, attacker, defender, isAir) {
             let attackCoeff = attacker.attack / 100 * attacker.hp / 10;
-            let defenseCoeff = (200 - (defender.coDefense + defender.terrainDefense * defender.hp / 10)) / 100;
+            let terrainDefense = isAir ? 0 : defender.terrainDefense * defender.hp / 10;
+            let defenseCoeff = (200 - (defender.coDefense + terrainDefense)) / 100;
 
             let rawDamage = baseDamage * attackCoeff * defenseCoeff;
             let flooredDamage = Math.floor(rawDamage);
@@ -86,24 +87,30 @@ OptionsReader.instance().onOptionsReady((options) => {
 
         // TODO: check for NaN
 
+        let highlight2hkos = false;
+
         let cells = damageTable.querySelectorAll("td.small");
         for (let cell of cells) {
             if (!cell.hasAttribute("base-damage")) {
                 continue;
             }
 
+            let isAir = (cell.id || "").match(/yc(t-copter|b-copter|fighter|bomber|stealth|blackbomb)/);
+
             let baseDamage = parseFloat(cell.getAttribute("base-damage"));
-            let roundedDamage = getDamage(baseDamage, attacker, defender);
+            let roundedDamage = getDamage(baseDamage, attacker, defender, isAir);
 
             let hasTwoHitKo = false;
-            let remainingHp = defender.hp * 10 - roundedDamage;
-            if (roundedDamage > 0 && remainingHp > roundedDamage) {
-                let newDefender = Object.assign({}, defender);
-                newDefender.hp = Math.ceil(remainingHp / 10);
-                let secondHitDamage = getDamage(baseDamage, attacker, newDefender);
-                if (secondHitDamage >= remainingHp) {
-                    console.log("Found 2hko!:", baseDamage);
-                    hasTwoHitKo = true;
+            if (highlight2hkos) {
+                let remainingHp = defender.hp * 10 - roundedDamage;
+                if (roundedDamage > 0 && remainingHp > roundedDamage) {
+                    let newDefender = Object.assign({}, defender);
+                    newDefender.hp = Math.ceil(remainingHp / 10);
+                    let secondHitDamage = getDamage(baseDamage, attacker, newDefender);
+                    if (secondHitDamage >= remainingHp) {
+                        console.log("Found 2hko!:", baseDamage);
+                        hasTwoHitKo = true;
+                    }
                 }
             }
 
@@ -156,19 +163,19 @@ OptionsReader.instance().onOptionsReady((options) => {
     // TODO: style the number inputs
     function makeControlsNode() {
         const kControlsHtml = `
-<div id="damage-controls">
+<div id="damage-controls" style="margin-top: 5px; margin-bottom: 3px">
     <div>
-    <label>
-        Sort:
-    </label>
-    <select id="order-select">
-        <option>Alphabetical Order</option>
-        <option selected>Production Order</option>
-    </select>
+        <label>
+            Sort:
+        </label>
+        <select id="order-select">
+            <option>Alphabetical Order</option>
+            <option selected>Production Order</option>
+        </select>
         <label>
             Attack:
         </label>
-        <input id="attack-rating" type="number" value="100" step="10"
+        <input id="attack-rating" type="number" value="100" min="0" step="10"
             class="awbwenhancements-numeric-input" style="width: 3.5em;" />
         <label>
             HP:
@@ -188,8 +195,19 @@ OptionsReader.instance().onOptionsReady((options) => {
         <label>
             Terrain Defense:
         </label>
-        <input id="terrain-defense-rating" type="number" value="0" step="10"
+        <input id="terrain-defense-rating" type="number" value="0" min="0" step="10" max="100"
             class="awbwenhancements-numeric-input" style="width: 3em;" />
+        <div class="info-box" style="margin-left: 5px;">
+            ?
+            <span class="info-box-text">
+            Pink: 0-9   </br>
+            Red: 10-24    </br>
+            Orange: 25-49 </br>
+            Yellow: 50-74 </br>
+            Green: 75-99  </br>
+            Blue: 100+    </br>
+            </span>
+        </div>
     </div>
 </div>`;
         let tempNode = document.createElement("div");
