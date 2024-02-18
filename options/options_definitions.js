@@ -32,24 +32,6 @@ let kCheckOptionsMapping = [
             `This feature is not supported in Firefox due to browser limitations.`
         ],
     }, {
-        id: "enable-replay-shortcuts",
-        name: "options_enable_replay_shortcuts",
-        default: true,
-        label: "Enable Replay Keyboard Shortcuts",
-        description: [
-            "Use the keyboard to navigate forward and backward in replays rather than having " +
-            "to click the buttons."
-        ],
-    }, {
-        id: "enable-gameswait-redirect",
-        name: "options_enable_gameswait_redirect",
-        default: true,
-        label: "Enable Automatic Game Lobby Redirect",
-        description: [
-            `Automatically redirect from expired links to the "gameswait.php" page to the ` +
-            `corresponding "2030.php" page.`
-        ],
-    }, {
         id: "enable-enhanced-damage-chart",
         name: "options_enable_enhanced_damage_chart",
         default: true,
@@ -214,30 +196,6 @@ let kRangeOptionsMapping = [
 
 let kKeyboardOptionsMapping = [
     {
-        id: "rewind-turn",
-        name: "options_bindings_rewind_turn",
-        default: [38 /*up*/,    72 /*h*/],
-        label: "Rewind Turn",
-        description: [],
-    }, {
-        id: "rewind-action",
-        name: "options_bindings_rewind_action",
-        default: [37 /*left*/,  75 /*k*/],
-        label: "Rewind Action",
-        description: [],
-    }, {
-        id: "forward-action",
-        name: "options_bindings_forward_action",
-        default: [39 /*right*/, 74 /*j*/],
-        label: "Forward Action",
-        description: [],
-    }, {
-        id: "forward-turn",
-        name: "options_bindings_forward_turn",
-        default: [40 /*down*/, 76 /*l*/],
-        label: "Forward Turn",
-        description: [],
-    }, {
         id: "toggle-calculator",
         name: "options_bindings_toggle_calculator",
         default: [67 /*c*/],

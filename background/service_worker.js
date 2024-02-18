@@ -25,7 +25,7 @@ function fetchReplayState(gameId) {
 }
 
 function fetchMapName(gameId) {
-    let gameUrl = new URL("https://awbw.amarriner.com/2030.php");
+    let gameUrl = new URL("https://awbw.amarriner.com/game.php");
     gameUrl.search = new URLSearchParams({games_id: gameId});
 
     return fetch(gameUrl).then((resp) => {

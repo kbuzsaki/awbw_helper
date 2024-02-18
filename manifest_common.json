@@ -14,13 +14,12 @@
     },
     "content_scripts": [
         {
-            "matches": ["https://awbw.amarriner.com/2030.php*"],
+            "matches": ["https://awbw.amarriner.com/game.php*"],
             "js": [
                 "options/options_definitions.js",
                 "lib/options_reader.js",
                 "content_scripts/toggle_calculator_shortcut_script.js",
                 "content_scripts/rate_limit_workaround_script.js",
-                "content_scripts/replay_shortcuts_script.js",
                 "content_scripts/speedy_event_panel_script.js"
             ]
         }, {
@@ -30,13 +29,6 @@
                 "options/options_definitions.js",
                 "lib/options_reader.js",
                 "content_scripts/enhanced_damage_chart_script.js"
-            ]
-        }, {
-            "matches": ["https://awbw.amarriner.com/gameswait.php*"],
-            "js": [
-                "options/options_definitions.js",
-                "lib/options_reader.js",
-                "content_scripts/gameswait_redirect_script.js"
             ]
         }, {
             "matches": ["https://awbw.amarriner.com/moveplanner.php*"],
