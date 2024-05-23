@@ -127,6 +127,14 @@
 }
 
 
+.awbwenhancements-aa-player-banner {
+  background: linear-gradient(to right, rgb(132, 223, 232), rgb(58, 158, 230));
+}
+
+.awbwenhancements-aa-player-border {
+  border-color: rgb(58, 158, 230);
+}
+
 .awbwenhancements-btn {
     display: flex;
     height: 20px;
